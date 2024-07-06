@@ -3,7 +3,7 @@
 
 ## Overview
 
-This project is an assignment focused on image resizing using OpenCV and custom C++ implementations. The assignment evaluates the understanding of OpenCV, writing optimal C/C++ code, debugging, and performance optimization. The project involves three main steps:
+This project is an assignment focused on image resizing using OpenCV and custom C++ implementations. The project involves three main steps:
 1. Resizing an image using OpenCV's `cv::resize` function with three different interpolation methods.
 2. Measuring the timing for 1000 iterations of each interpolation method.
 3. Implementing custom resizing functions and comparing their performance with OpenCV's functions.
@@ -17,7 +17,8 @@ This project is an assignment focused on image resizing using OpenCV and custom 
   - `INTER_NEAREST`
   - `INTER_LINEAR`
   - `INTER_CUBIC`
-- **Input Image:** [G178_2-1080.BMP](https://avproglobal.egnyte.com/fl/V6JZASnouL)
+- **Input Image:** ![input](https://github.com/Puru-Singh/Embedded-ML-Assignment/assets/81344325/88be746a-829d-40b1-815f-24be0595e3e6)
+
 - **Output Images:**
   - `Nearest.png`
   - `Linear.png`
@@ -60,9 +61,9 @@ g++ -o main Main.cpp `pkg-config --cflags --libs opencv4`
 
 #### Run the Application
 
-```bash
-./main
-```
+- Make a clone of this repository.
+- To build: cmake --build .\build\
+- To run: .\build\Debug\OpenCVExample.exe
 
 ### Explanation of Key Functions
 
@@ -93,9 +94,3 @@ g++ -o main Main.cpp `pkg-config --cflags --libs opencv4`
 - Ensure to use a complete CPU to maximize performance and avoid running any compute-intensive workload while measuring performance.
 - For all resize operations, the new height is `original_height / 2` and the new width is `original_width / 2`.
 
-## Submission Instructions
-
-- Provide a clear README.md explaining how to build and run the application locally.
-- Include any necessary dependencies and installation instructions.
-- Include comments where necessary.
-- Submit the assignment via a Git repository or a compressed file.
