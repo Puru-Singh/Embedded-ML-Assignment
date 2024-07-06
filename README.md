@@ -46,6 +46,9 @@ This project is an assignment focused on image resizing using OpenCV and custom 
 ### Dependencies
 
 - OpenCV
+- CMake
+- Visual Studio Build Tools
+- Visual Studio 2022
 
 ### Building the Project
 
@@ -53,17 +56,10 @@ This project is an assignment focused on image resizing using OpenCV and custom 
 2. Clone the repository or download the project files.
 3. Navigate to the project directory.
 
-#### Compile the Code
+#### Running the Application
 
-```bash
-g++ -o main Main.cpp `pkg-config --cflags --libs opencv4`
-```
-
-#### Run the Application
-
-- Make a clone of this repository.
-- To build: cmake --build .\build\
-- To run: .\build\Debug\OpenCVExample.exe
+- To build: ```bash cmake --build .\build\ ```
+- To run: ```bash .\build\Debug\OpenCVExample.exe ```
 
 ### Explanation of Key Functions
 
@@ -79,9 +75,9 @@ g++ -o main Main.cpp `pkg-config --cflags --libs opencv4`
 ### Example Output
 
 - **Timing for 1000 iterations:**
-  - `INTER_NEAREST`: [ ] ms
-  - `INTER_LINEAR`: [ ] ms
-  - `INTER_CUBIC`: [ ] ms
+  - `INTER_NEAREST`: [4920.62ms] ms
+  - `INTER_LINEAR`: [4929.44ms] ms
+  - `INTER_CUBIC`: [4907.66ms] ms
 
 - **Resized Images:**
   - `Nearest.png`
