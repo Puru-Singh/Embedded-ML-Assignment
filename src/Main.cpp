@@ -24,41 +24,41 @@ void stepOne(Mat image, Size size)
 void stepTwo(Mat image, Size size)
 {
     //TickMeter object to calculate time for iterations
-    TickMeter t;
+    TickMeter t1,t2,t3;
     Mat testImg;
     
     //Calculating time for 1000 iterations of Nearest Neighbour Interpolation
     int i=0;
-    t.start();
+    t1.start();
     for(; i<1000; i++)
     {
         resize(image, testImg, size, INTER_NEAREST);
     }
-    t.stop();
+    t1.stop();
 
-    cout<<"Time taken by Nearest Neighbour = "<<t.getTimeMilli()<<"ms \n";
+    cout<<"Time taken by Nearest Neighbour = "<<t1.getTimeMilli()<<"ms \n";
 
     //Calculating time for 1000 iterations of Linear Interpolation
     i=0;
-    t.start();
+    t2.start();
     for(; i<1000; i++)
     {
         resize(image, testImg, size, INTER_LINEAR);
     }
-    t.stop();
+    t2.stop();
 
-    cout<<"Time taken by Linear Interpolation = "<<t.getTimeMilli()<<"ms \n";
+    cout<<"Time taken by Linear Interpolation = "<<t2.getTimeMilli()<<"ms \n";
 
     //Calculating time for 1000 iterations of Cubic Interpolation
     i=0;
-    t.start();
+    t3.start();
     for(; i<1000; i++)
     {
         resize(image, testImg, size, INTER_CUBIC);
     }
-    t.stop();
+    t3.stop();
 
-    cout<<"Time taken by Cubic Interpolation = "<<t.getTimeMilli()<<"ms \n";
+    cout<<"Time taken by Cubic Interpolation = "<<t3.getTimeMilli()<<"ms \n";
 
 }
 
@@ -86,8 +86,8 @@ void customNearest(Mat image, Size size)
 
 void customLinear(Mat image, Size size)
 {
-    int r =  static_cast<int>(image.rows*0.5);
-    int c = static_cast<int>(image.cols*0.5);
+    int r =  static_cast<int>(size.height);
+    int c = static_cast<int>(size.width);
 
     const float y_ratio = static_cast<float>(image.rows)/r;
     const float x_ratio = static_cast<float>(image.cols)/c;
@@ -96,15 +96,17 @@ void customLinear(Mat image, Size size)
 
     for(int i=0; i<r ; i++)
     {
-        int y_s = static_cast<int>((i+0.25)*y_ratio - 0.25);
-        const float b = ((i+0.25)*y_ratio - 0.25) - y_s;
+        int y_s = static_cast<int>(i * y_ratio);
+
+        const float b = (i * y_ratio) - y_s;
         const float b1 = (1 - b);
         Vec3b q;
 
         for(int j=0; j<c; j++)
         {
-            int x_s = static_cast<int>((j+0.25)*x_ratio - 0.25);
-            const float a = ((j+0.25)*x_ratio - 0.25) - x_s;
+            int x_s = static_cast<int>(j * x_ratio);
+
+            const float a = (j * x_ratio) - x_s;
             const float a1 = (1 - a);
 
             const float a1_cross_b1 = a1 * b1; //weights
@@ -149,9 +151,9 @@ int main()
 
     //Performing the step one: to resize image using nearest neighbour, linear and cubic interpolation
     stepOne(image, size);
-
+    
     //Measuring performance for 1000 iterations for each of the interpolation methods
-    //stepTwo(image, size);
+    stepTwo(image, size);
 
     //Re-implementing interpolation functions
     stepThree(image, size);
