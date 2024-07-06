@@ -1,0 +1,3 @@
+C:/Users/Puru/Documents/OpenCVP/Embedded-ML-Assignment/build/CMakeFiles/OpenCVExample.dir
+C:/Users/Puru/Documents/OpenCVP/Embedded-ML-Assignment/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Puru/Documents/OpenCVP/Embedded-ML-Assignment/build/CMakeFiles/ZERO_CHECK.dir
