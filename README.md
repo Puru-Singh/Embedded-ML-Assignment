@@ -39,7 +39,6 @@ This project is an assignment focused on image resizing using OpenCV and custom 
   - Implement custom functions for image resizing equivalent to `cv::resize`.
 - **Comparison:**
   - Compare the output of the custom functions with OpenCV's functions for correctness.
-  - Measure and compare the performance (timing) for all three methods of interpolation.
 
 ## Code Overview
 
@@ -71,6 +70,12 @@ This project is an assignment focused on image resizing using OpenCV and custom 
 - **`customNearest`**:
   - Implements a custom nearest neighbor interpolation.
   - Saves the resized image.
+- **`customLinear`**:
+  - Implements a custom bilinear interpolation.
+  - Saves the resized image.
+- **`customCubic`**:
+  - Implements a custom bicubic interpolation.
+  - Saves the resized image.
   
 ### Example Output
 
@@ -84,6 +89,8 @@ This project is an assignment focused on image resizing using OpenCV and custom 
   - `Linear.png`
   - `Cubic.png`
   - `CustomNearestResult.png`
+  - `CustomLinearResult.png`
+  - `CustomCubicResult.png`
 
 ### Notes
 
