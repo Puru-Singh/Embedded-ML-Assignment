@@ -1,3 +1,7 @@
 {
-    "cmake.options.statusBarVisibility": "visible"
+    "cmake.options.statusBarVisibility": "visible",
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "iostream": "cpp"
+    }
 }

@@ -92,39 +92,104 @@ void customLinear(Mat image, Size size)
     const float y_ratio = static_cast<float>(image.rows)/r;
     const float x_ratio = static_cast<float>(image.cols)/c;
 
-    Mat newImage(r, c, image.type());
+    Mat res(r, c, image.type());
 
     for(int i=0; i<r ; i++)
     {
-        int y_s = static_cast<int>(i * y_ratio);
+        int y_s = static_cast<int>((i) * y_ratio);
 
-        const float b = (i * y_ratio) - y_s;
+        const float b = ((i) * y_ratio) - y_s;
         const float b1 = (1 - b);
         Vec3b q;
 
         for(int j=0; j<c; j++)
         {
-            int x_s = static_cast<int>(j * x_ratio);
+            int x_s = static_cast<int>((j) * x_ratio);
 
-            const float a = (j * x_ratio) - x_s;
+            const float a = ((j) * x_ratio) - x_s;
             const float a1 = (1 - a);
 
             const float a1_cross_b1 = a1 * b1; //weights
             const float a1_cross_b = a1 * b;
             const float a_cross_b1 = a * b1;
             const float a_cross_b = a * b;
-
-            q = (a1_cross_b1 * image.at<Vec3b>(y_s, x_s)) 
-                + (a1_cross_b * image.at<Vec3b>(y_s+1, x_s)) 
-                + (a_cross_b1 * image.at<Vec3b>(y_s, x_s+1))
-                + (a_cross_b * image.at<Vec3b>(y_s+1, x_s+1));
-
-            newImage.at<Vec3b>(i, j) = q;
+            
+            q = Vec3b(saturate_cast<uchar>(a1_cross_b1 * image.at<Vec3b>(y_s, x_s)[0]), saturate_cast<uchar>(a1_cross_b1 * image.at<Vec3b>(y_s, x_s)[1]), saturate_cast<uchar>(a1_cross_b1 * image.at<Vec3b>(y_s, x_s)[2])) 
+                + Vec3b(saturate_cast<uchar>(a1_cross_b * image.at<Vec3b>(y_s+1, x_s)[0]), saturate_cast<uchar>(a1_cross_b * image.at<Vec3b>(y_s+1, x_s)[1]), saturate_cast<uchar>(a1_cross_b * image.at<Vec3b>(y_s+1, x_s)[2])) 
+                + Vec3b(saturate_cast<uchar>(a_cross_b1 * image.at<Vec3b>(y_s, x_s+1)[0]), saturate_cast<uchar>(a_cross_b1 * image.at<Vec3b>(y_s, x_s+1)[1]), saturate_cast<uchar>(a_cross_b1 * image.at<Vec3b>(y_s, x_s+1)[2]))
+                + Vec3b(saturate_cast<uchar>(a_cross_b * image.at<Vec3b>(y_s+1, x_s+1)[0]), saturate_cast<uchar>(a_cross_b * image.at<Vec3b>(y_s+1, x_s+1)[1]), saturate_cast<uchar>(a_cross_b * image.at<Vec3b>(y_s+1, x_s+1)[2]));
+            
+            res.at<Vec3b>(i, j) = q;
         }
     }
 
-    imwrite("CustomLinearResult.png",newImage);
+    imwrite("CustomLinearResult.png",res);
 
+}
+
+double W(double t) {
+    const double a = -0.5; // You can change this to other values like -0.75 or -1 for different results
+    if (std::abs(t) <= 1) {
+        return (a + 2) * std::pow(std::abs(t), 3) - (a + 3) * std::pow(std::abs(t), 2) + 1;
+    } else if (std::abs(t) <= 2) {
+        return a * std::pow(std::abs(t), 3) - 5 * a * std::pow(std::abs(t), 2) + 8 * a * std::abs(t) - 4 * a;
+    } else {
+        return 0;
+    }
+}
+
+void customCubic(Mat image, Size size)
+{
+    int r = size.height;
+    int c = size.width;
+
+    Mat res(r, c, image.type());
+
+    for(int k=0; k<image.channels(); k++)
+    {
+        for(int i=0; i<r; i++)
+        {
+            for(int j=0; j<c; j++)
+            {
+                double xm = (i+0.5)*(image.rows/static_cast<double>(r))-0.5;
+                double ym = (j+0.5)*(image.cols/static_cast<double>(c))-0.5;
+
+                int xi = static_cast<int>(floor(xm));
+                int yi = static_cast<int>(floor(ym));
+
+                double u = xm - xi;
+                double v = ym - yi;
+            
+                
+                Vec3d out(0, 0, 0);
+                //double out[3];
+                for (int n = -1; n <= 2; n++) {
+                    for (int m = -1; m <= 2; m++) {
+                        int x = xi + n;
+                        int y = yi + m;
+
+                        // Boundary check
+                        if (x < 0) x = 0;
+                        if (x >= image.rows) x = image.rows - 1;
+                        if (y < 0) y = 0;
+                        if (y >= image.cols) y = image.cols - 1;
+                        Vec3b pixel = image.at<Vec3b>(x, y);
+                        double weight = W(u - n) * W(v - m);
+                        out[0] += pixel[0] * weight;
+                        out[1] += pixel[1] * weight;
+                        out[2] += pixel[2] * weight;
+                    }
+                }
+                res.at<Vec3b>(i, j) = Vec3b(
+                    static_cast<uchar>(out[0]),
+                    static_cast<uchar>(out[1]),
+                    static_cast<uchar>(out[2])
+                );
+                
+            }
+        }
+    }
+    imwrite("CustomCubicResult.png",res);
 }
 
 void stepThree(Mat image, Size size)
@@ -136,7 +201,7 @@ void stepThree(Mat image, Size size)
     customLinear(image, size);
 
     //Custom Cubic implementation
-
+    customCubic(image, size);
 
 }
 
@@ -149,14 +214,22 @@ int main()
     //Creating a Size object for the new size of the resultant image -> half of original size so /2
     Size size(image.cols/2,image.rows/2);
 
-    //Performing the step one: to resize image using nearest neighbour, linear and cubic interpolation
-    stepOne(image, size);
-    
-    //Measuring performance for 1000 iterations for each of the interpolation methods
-    stepTwo(image, size);
+    int opt = 0;
+    while(true)
+    {
+        cout<<"Select the step to run -> \n1. Step one\n2. Step two\n3. Step three\n4. Exit";
+        cin>>opt;
+        switch(opt)
+        {
+            case 1: stepOne(image,size);
+                    break;
+            case 2: stepTwo(image,size);
+                    break;
+            case 3: stepThree(image,size);
+                    break;
+            case 4: return 0;
+            default: return 0;
+        }
+    }
 
-    //Re-implementing interpolation functions
-    stepThree(image, size);
-
-    return 0;
 }
